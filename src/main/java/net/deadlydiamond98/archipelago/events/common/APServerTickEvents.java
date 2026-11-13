@@ -1,5 +1,7 @@
 package net.deadlydiamond98.archipelago.events.common;
 
+import net.deadlydiamond98.archipelago.archipelago.Archipelago;
+import net.deadlydiamond98.archipelago.archipelago.extras.IcarusMode;
 import net.deadlydiamond98.archipelago.archipelago.items.type.AbstractAPItem;
 import net.deadlydiamond98.archipelago.common.world.APPersistentState;
 import net.deadlydiamond98.archipelago.compat.ArchipelagoCompat;
@@ -14,6 +16,9 @@ public class APServerTickEvents {
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             if (APServerPlayConnectionEvents.syncData) {
                 APServerPlayConnectionEvents.syncData = false;
+                if (Archipelago.hasIcarusMode()) {
+                    IcarusMode.giveIcarusItems();
+                }
                 APAdvancementHelper.resyncAdvancements();
                 ArchipelagoCompat.applyBiomeRestriction(server.getOverworld(), APPersistentState.get().getUnlockedBiomes());
                 ArchipelagoCompat.applyStructureRestriction(server.getOverworld(), APPersistentState.get().getUnlockedStructures());

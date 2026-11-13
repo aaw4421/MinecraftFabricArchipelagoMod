@@ -42,6 +42,8 @@ public class APPersistentState extends PersistentState implements IAbilityCheck 
     private final Set<String> unlockedBiomes = new HashSet<>();
     // Saves structures that can be hinted with Explorer's Compass
     private final Set<String> unlockedStructures = new HashSet<>();
+    // Saves list of players who have received their Elytra (Icarus Mode only)
+    private final Set<UUID> elytraPlayers = new HashSet<>();
 
 //    private final Set<Item> collectedItems = new HashSet<>();
     private boolean hasKilledEnderDragon;
@@ -95,6 +97,18 @@ public class APPersistentState extends PersistentState implements IAbilityCheck 
         if (unlockedStructures.addAll(structures)) {
             markDirty();
             ArchipelagoCompat.applyStructureRestriction(world, unlockedStructures);
+        }
+    }
+
+    // ELYTRA METHODS //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public Set<UUID> getElytraPlayers() {
+        return elytraPlayers;
+    }
+
+    public void addElytraPlayer(UUID playerUuid) {
+        if (elytraPlayers.add(playerUuid)) {
+            markDirty();
         }
     }
 
@@ -230,6 +244,12 @@ public class APPersistentState extends PersistentState implements IAbilityCheck 
         }
         nbt.put("unlockedStructures", unlockedStructuresList);
 
+        NbtList elytraPlayersList = new NbtList();
+        for (UUID uuid : this.elytraPlayers) {
+            elytraPlayersList.add(NbtString.of(uuid.toString()));
+        }
+        nbt.put("elytraPlayers", elytraPlayersList);
+
         nbt.putBoolean("HasKilledEnderDragon", this.hasKilledEnderDragon);
         nbt.putBoolean("HasKilledWither", this.hasKilledWither);
         nbt.putInt("RubiesCollected", this.currentRubyCount);
@@ -281,6 +301,11 @@ public class APPersistentState extends PersistentState implements IAbilityCheck 
         NbtList unlockedStructuresList = nbt.getList("unlockedStructures", NbtElement.STRING_TYPE);
         for (int i = 0; i < unlockedStructuresList.size(); i++) {
             states.unlockedStructures.add(unlockedStructuresList.getString(i));
+        }
+
+        NbtList elytraPlayersList = nbt.getList("elytraPlayers", NbtElement.STRING_TYPE);
+        for (int i = 0; i < elytraPlayersList.size(); i++) {
+            states.elytraPlayers.add(UUID.fromString(elytraPlayersList.getString(i)));
         }
 
         states.hasKilledEnderDragon = nbt.getBoolean("HasKilledEnderDragon");
