@@ -7,6 +7,8 @@ import net.deadlydiamond98.archipelago.util.APServerUtil;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import org.apache.commons.lang3.arch.Processor.Arch;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -92,6 +94,10 @@ public class Archipelago extends Client {
         return -1;
     }
 
+    public static boolean hasIcarusMode() {
+        return Archipelago.getFromSlot(mcSlotData -> mcSlotData.icarus_mode) == 1;
+    }
+
     public static boolean hasItemsanity() {
         return Archipelago.getFromSlot(mcSlotData -> mcSlotData.itemsanity) == 1;
     }
@@ -125,6 +131,7 @@ public class Archipelago extends Client {
         public int deathlink;
         public int traplink;
 
+        public int icarus_mode;
         public int keep_inventory;
         public int itemsanity;
 
