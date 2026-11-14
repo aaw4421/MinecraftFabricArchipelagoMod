@@ -35,6 +35,16 @@ public class PlayerEntityMixin implements IPlayerReceivedItems {
             original.call();
         }
     }
+    
+    // Prevents Elytra flying if Jump, Sprint, or Swim are locked abilities
+    @WrapMethod(method = "checkFallFlying")
+    public boolean archipelago$blockElytraFlight(Operation<Boolean> original) {
+        if (UpdatePlayerAbilitiesS2CPacket.canJump && UpdatePlayerAbilitiesS2CPacket.canSprint && UpdatePlayerAbilitiesS2CPacket.canSwim) {
+            return original.call();
+        } else {
+            return false;
+        }
+    }
 
     // READ & WRITE NBT ////////////////////////////////////////////////////////////////////////////////////////////////
 
